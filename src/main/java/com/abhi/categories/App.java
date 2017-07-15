@@ -35,7 +35,7 @@ public class App
 	}	
 	
 	/**
-	 * run main pass input file argument as path of the file /categories/file4.txt
+	 * run main pass input file argument as path of the file testfiles/file1.txt
 	 * @param args
 	 */
     public static void main( String[] args ) {
@@ -48,14 +48,17 @@ public class App
 		legalCategoriesList.add("OTHER");
 		
     	App app = new App(legalCategoriesList);
-    	if(args[0] != null){
-    		app.outputWriter(app.populateCategories(new File(args[0])));
+    	if(args!= null && args.length !=0){
+    		app.outputWriter(app.populateCategories(new File(App.class.getClassLoader().getResource(args[0]).getFile())));
+    	}else{
+    		System.err.println("usage: pass program argument as a file.");
     	}
     }
     
     /**
      * 
      * @param file
+     * @return Map<String, Object> resultMap with two keys COUNTS_ARR of object type int[] UNIQUE_CAT_LINE_SET of object type LinkedHashSet<String>
      */
     public Map<String, Object> populateCategories(File file){
     	Scanner scanner = null;
@@ -100,7 +103,6 @@ public class App
      * if determined category does not exist in the line, returns null.
      * it determine category based on first occurrence of space in the line.
      * @param String new line
-     * @param List<String> legalCategoriesList
      * @return String category
      */
     public String parseCategory(String line){
@@ -124,16 +126,17 @@ public class App
 	public void outputWriter(Map<String, Object> resultMap){
     	//Writing output 
     	System.out.println("Category\tCount");
-    	int[] counts = (int[]) resultMap.get(COUNTS_ARR);
-        for(String string:this.legalCategoriesList){
-        	System.out.print(string+"\t");
-        	int indexOf = this.legalCategoriesList.indexOf(string);
-   			System.out.print(counts[indexOf]);
-    		System.out.print("\n");
-        }
-        System.out.print("\n");
-        Set<String> set = (Set<String>) resultMap.get(UNIQUE_CAT_LINE_SET);
-        set.stream().forEach(line -> System.out.println(line));
-      
+    	if(resultMap != null){
+	    	int[] counts = (int[]) resultMap.get(COUNTS_ARR);
+	        for(String string:this.legalCategoriesList){
+	        	System.out.print(string+"\t");
+	        	int indexOf = this.legalCategoriesList.indexOf(string);
+	   			System.out.print(counts[indexOf]);
+	    		System.out.print("\n");
+	        }
+	        System.out.print("\n");
+	        Set<String> set = (Set<String>) resultMap.get(UNIQUE_CAT_LINE_SET);
+	        set.stream().forEach(line -> System.out.println(line));
+    	}      
     }
 }
